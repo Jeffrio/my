@@ -1,0 +1,45 @@
+java
+	dal
+		cloggingListener	
+	dao
+		QueryDao：查询执行
+	entity
+		QueryPojo：查询结果实体类，包含id,uid,inserdata
+	query
+		IQuery：查询接口
+		Query：查询实现
+	util
+		LogMgr：log4j
+		ResponseStatus：返回结果状态
+		ResponseTemplte：创建空jason
+		ResponseType：返回数据方式
+	web
+		QueryServlet
+
+sourcrs
+	Dal.config：allInOne配置
+	log4j.properties：log4j配置
+	sql.config：sql语句配置
+	sql.xml：sql语句xml配置
+
+
+
+好处：
+	1、避免了繁琐的sql语句拼接操作
+	2、方便查询内容、查询条件的扩展（通用性更强），且不需要重新编译源代码
+	3、提供了统一的查询接口，查询内容直接由（url+form）决定
+可能存在问题：
+	1、通过任意修改sql.xml，获取数据库数据（select * from sysobjects where xtype='u'）
+	2、可执行过程，SP_WHO,SP_PASSWORD
+	3、未检测参数是否为空
+	4、未指定参数类型（进行类型检查），sql注入
+不明白的地方：
+	1、QueryDao中的sqlBuffer有什么作用
+
+sql 注入
+
+
+补充：
+数据库不可能只有一个（加入数据库配置）
+sql、paramsList变量线程不安全（静态变量，高并发量冲突）
+QueryPojoExtractor没有实现多态（可提供用户自定义拼接方式）

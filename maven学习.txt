@@ -1,0 +1,1 @@
+archetype:generate 生成maven项目骨架

@@ -1,0 +1,12 @@
+web.xml把web请求分发到相应的servlet
+
+FlightServlet,HotelServlet,TravelServlet中
+1、都使用了private boolean checkDatePattern(String date_str)来检查日期格式，若格式检查规则有变化，需修改多个地方；是否可以将该方法提取到util中？
+2、分别设置了response编码、格式，如要修改需对三个地方同时进行修改；是否可以将该操作抽象到ResponseTemplate中？（包括生成jason尾部）
+3、报错信息直接采用了String常量，不易管理；是否可以将报错信息放到相应的常量文件中？（dayAfter，top的范围、默认取值同理）
+4、每次检查不通过之后都是直接{writer.write();return;};是否可以每次直接设置出错类型，最后根据出错类型进行{writer.write();return;}操作?
+5、当top为空时，将其设置为-1；是否需要将该操作放到***Query中的***QueryWithoutTop(String uid,String dayAfter)方法中并在I***Query中提供对应函数?
+
+
+FlightQuery,HotelQuery,TravelQuery中
+1、都有生成数据格式的操作；是否可以将相应的操作抽象到util中?

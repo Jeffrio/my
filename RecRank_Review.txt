@@ -1,0 +1,4 @@
+1、QueryServlet中
+{response.setContentType("text/javascript");response.setCharacterEncoding("UTF-8");response.setHeader("Cache-Control", "no-cache");}，可否将相应的常量放到配置文件中responseFormat.properties
+2、{if (json != null && !json.isEmpty()) {writer.write(json);}}，是否需要判断？
+3、MetricsMgr.getMetricsMgr().metricLog(1, MetricsTypes.request_count);是否需要直接定义变量获得该对象的引用

@@ -1,0 +1,102 @@
+一、PawPrint
+1、log4j
+2、volatile		作为指令关键字，确保本条指令不会因编译器的优化而省略，且要求每次直接读值
+3、synchronized		锁定方法或者代码块
+4、Properties		读取项目配置文件，getProperty(String key [, String defaultValue])	http://www.2cto.com/px/201006/47834.html
+5、config gen 动态修改配置
+
+DalClient
+DalQueryDao
+
+代码分析
+org.ctrip.bi.ordersinmylife.Dao
+DimCityDao
+FlightDao		提供三种方式查询，并以jason格式返回查询结果
+HotelDao		提供三种方式查询，并以jason格式返回查询结果
+TravelDal		提供三种方式查询，并以jason格式返回查询结果
+
+
+org.ctrip.bi.ordersinmylife.Entity
+DimCityPojo		以List形式返回城市列表
+FlightPojo		以jason格式返回机票订单信息
+HotelPojo		以jason格式返回酒店订单信息
+TravelPojo		以jason格式返回旅游订单信息
+
+
+org.ctrip.bi.ordersinmylife.pool
+DimCityBuffer		存放城市信息，单例模式，用作缓存
+
+
+org.ctrip.bi.ordersinmylife.query:
+FlightQuery		调用FlightDao查询机票订单
+			public String flightQuery(String uid,String dayAfter,int top);	查询指定uid机票订单
+			public String flightQueryWithoutUID(String dayAfter,int top);	查询所有订单，top不能超过1000，
+HotelQuery		提供三种形式查询（同FlightQuery)
+TravelQuery		提供三种形式查询（同FlightQuery）
+IFlightQuery		机票订单查询接口
+IHotelQuery		酒店订单查询接口
+ITravelQuery		旅游订单查询接口
+
+
+org.ctrip.bi.ordersinmylife.util
+LogMgr			Log4j操作
+ResponseStatus		返回操作状态
+ResponseTemplte		返回空jason模板
+ResponseType		返回类型（hotel，flight，travel）
+
+
+org.ctrip.bi.ordersinmylife.web:
+FlightServlet		响应机票订单查询请求
+HotelServlet		响应酒店订单查询请求
+TravelServlet		响应旅游订单查询请求
+
+
+
+
+
+二、RecRank
+1、@SuppressWarnings
+
+LogMgr和MetricsMgr 都设置了LogConfig（两段静态代码）,有必要吗？
+DBManager中destroy()方法，为什么if (mongo == null) {mongo.close();}
+
+
+com.ctrip.bi.query.clog：
+MetricsTypes		路由类型enum
+MetricsMgr		利用ProertiesParse中的配置信息，设置com.ctrip.framework.clogging.agent.config.LogConfig,单例模式
+			public void metricLog(float value, MetricsTypes type)写日志metricLogger.log(MetricsName, value, request_count)，记录不同类型的访问次数;
+			request_count(请求次数），request_exception(出错次数），request_distribution(响应时间)
+ClLogMgr		未使用
+AggregatorMar		未使用
+
+代码分析
+com.ctrip.bi.query.mongo：
+MongoQuery		public String queryRank(String customId)，以jason格式返回查询结果，按时间进行排序；"1971-01-01 00:00:00"之前的数据，时间显示为空
+DBManager		根据配置文件，连接mongo数据库，属于单例模式（懒汉）
+			public static DBManager getInstance()，返回DBManager实例
+			public DB getDB(string dbname),返回指定dbname的mongo数据库
+			public void destroy() 销毁mongo连接，
+RecBean			数据对象
+IRealTimeDataQuery	未使用接口
+
+
+com.ctrip.bi.query.query：
+IQuery			查询接口
+Query			调用MongoQuery查询指定UID或VID的数据，用jason格式返回，出现异常request_exception次数增加
+
+
+com.ctrip.bi.query.test：测试
+
+
+com.ctrip.bi.query.util：
+ComparatorData		返回两个RecBean.getAccessTime的比较结果
+PropertiesParse:	获取/query_cfg.properities中的配置信息，为单例模式
+LogMgr:			利用ProertiesParse中的配置信息，设置com.ctrip.framework.clogging.agent.config.LogConfig
+			public static ILog getCtripLog(Class c),返回com.ctrip.framework.clogging.agent.log.LogManager.getLogger(c)
+ResponseStatus		返回操作状态
+ResponseType		返回类型
+ProductionType		产品种类
+
+
+com.ctrip.bi.query.web：
+QueryServlet		响应get，post请求
